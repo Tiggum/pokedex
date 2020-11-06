@@ -11,10 +11,11 @@ class AllSearch extends React.Component{
     }
 
     async componentDidMount() {
-        const pokeResponse = await fetch('https://pokeapi.co/api/v2/pokemon/?limit=1100')
+        const pokeResponse = await fetch('https://pokeapi.co/api/v2/pokemon/?limit=10')
         const pokeJSON = await pokeResponse.json();
         this.setState({pokeJson: pokeJSON});
-        this.parsePokeList();
+        await this.parsePokeList();
+        //await this.sortPokeList();
     }
 
     async pokeLookup(link){
@@ -23,7 +24,7 @@ class AllSearch extends React.Component{
         return pokeJSON;
     }
 
-    parsePokeList = () => {
+    async parsePokeList() {
         const data = this.state.pokeJson;
         const list = data.results
         let pokemonList = [];
@@ -31,21 +32,39 @@ class AllSearch extends React.Component{
             const pokeData = this.pokeLookup(list[i].url);
             pokeData.then((obj) => {
                 pokemonList.push(obj);
-                // pokemonList = pokemonList.filter(pokemon => pokemon.game_indicies.length > 0);
+                // filteredPokemonList = pokemonList.filter(pokemon => pokemon.game_indicies.length > 0);
                 this.setState({pokeList: pokemonList});
             });
         }
     }
+    
+    async sortPokeList () {
+        const sortedList = [...this.state.pokeList].sort((a, b) => a.id - b.id);
+        this.setState({pokeList: sortedList});
+    }
 
     render(){
         return (
-                <ul>
-                    {this.state.pokeList.map(pokemon => <li><img src={pokemon.sprites.front_default} alt={pokemon.name} /></li>)}
-                </ul>
+                <table>
+                    <tbody>
+                        {this.state.pokeList.map(pokemon => {
+                            return (
+                                <tr>
+                                    <td><img src={pokemon.sprites.front_default} alt={pokemon.name} /></td>
+                                    <td>#{pokemon.id}<br />{pokemon.name}</td>
+                                    <td><button onClick={() => this.props.onClick(pokemon.name)}>View Details</button></td>
+                                </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
         )
     }
 
 }
 
 export default AllSearch;
+
+
 

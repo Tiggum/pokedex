@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import Search from './Search';
 import Display from './Display';
-import AllSearch from './AllSearch';
 
 class App extends React.Component {
   constructor(props){
@@ -15,18 +14,20 @@ class App extends React.Component {
   
   
   async pokemonSearch(pokemonName) {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + pokemonName + '?limit=1100')
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + pokemonName + '?limit=20')
     const json = await response.json()
     this.setState({pokemonJson: json, empty: false})
  }
 
-
+ pokemonSelect = (pokeJson) => {
+   this.setState({pokemonJson: pokeJson, empty: false});
+ }
 
   render() { 
     return (
       <div className='App-header'>
         <Search onClick={this.pokemonSearch.bind(this)}/>
-        {this.state.empty ? <AllSearch /> : <Display pokemonJson={this.state.pokemonJson} />}
+        {this.state.empty ? <span /> : <Display pokemonJson={this.state.pokemonJson} onClick={this.pokemonSearch.bind(this)} />}
       </div>
     );
   }

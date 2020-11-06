@@ -1,13 +1,12 @@
 import React from 'react'
+import AllSearch from './AllSearch'
 
 const Display = (props) => {    
     let pokemon = props.pokemonJson;
     
     if (pokemon.count > 0) {
         return (
-            <ul>
-                {pokemon.results.map(index => <li>{index.name}</li>)}
-            </ul>
+            <AllSearch onClick={props.onClick} />
         )
     } else {
         let pokemonID = pokemon.id;
@@ -25,6 +24,7 @@ const Display = (props) => {
                 <img src={pokemonSprite} alt={pokemonName} />
                 <br />
                 <h4>Pokemon Types: {pokemonType} </h4>
+                <TypeSearch pokemon={pokemon}/>
             </div>
         );
     }
